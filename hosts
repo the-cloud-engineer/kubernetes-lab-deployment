@@ -1,0 +1,34 @@
+[localhost]
+
+[source_image_clone_1]
+#source-colne-1 ansible_host=192.168.56.43
+
+[test]
+testnode-1 ansible_host=192.168.56.46
+testnode-2 ansible_host=192.168.56.47
+
+[masternode]
+master ansible_host=192.168.56.44
+
+[workernode]
+worker-0 ansible_host=192.168.56.45
+
+[vars]
+ansible_ssh_user=ubuntu
+ansible_ssh_port=22
+ansible_ssh_pass=passw0rd
+
+[test:vars]
+ansible_ssh_user=ubuntu
+ansible_ssh_port=22
+ansible_ssh_pass=passw0rd
+
+[masternode:vars]
+ansible_ssh_user=ubuntu
+ansible_ssh_port=22
+ansible_ssh_pass=passw0rd
+
+[workernode:vars]
+ansible_ssh_user=ubuntu
+ansible_ssh_port=22
+ansible_ssh_pass=passw0rd

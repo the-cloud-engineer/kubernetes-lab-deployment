@@ -1,0 +1,11 @@
+---
+- hosts: test
+  gather_facts: False
+  become: yes
+  vars_files: ../vars/vars.yaml
+  tasks:
+    - name: Set authorized key for remote user
+      authorized_key:
+        user: "{{ vm_user }}"
+        state: present
+        key: "{{ copy_local_key }}"

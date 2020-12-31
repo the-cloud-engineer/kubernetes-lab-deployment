@@ -1,0 +1,20 @@
+user_name: 
+  name: ubuntu
+password: passw0rd
+vm_user: ubuntu
+vm_password: passw0rd
+copy_local_key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
+#ubuntu specific variable
+sys_packages: [ 'curl', 'vim', 'git', 'ufw']
+
+#docker specific variable
+docker_packages: [ 'curl', 'vim', 'git', 'ufw']
+
+#k8s specific variable
+k8s_packages: [ 'curl', 'vim', 'git', 'ufw']
+
+uuid_temp_registory: /tmp/uuid_temp_hosts
+uuid_test_file: /tmp/test_vm_uuids
+host_info:
+  - 192.168.56.46 test-1
+  - 192.168.56.47 test-2
