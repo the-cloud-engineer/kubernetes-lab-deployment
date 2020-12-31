@@ -14,4 +14,8 @@
         name: br_netfilter
         state: present
 
-      
+    - name: validate uuids
+      shell: lsmod | grep br_net
+      register: netfilter_result
+
+    - debug: var=netfilter_result.stdout
