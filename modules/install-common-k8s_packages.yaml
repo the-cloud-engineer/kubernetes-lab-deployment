@@ -13,7 +13,7 @@
       debug: msg="{{ ansible_distribution_major_version }}"
 
     - name: Install common supporting packages
-      apt: name={{ common_support_k8s_support_packages }} state=present
+      apt: name={{ common_k8s_support_packages }} state=present
 
 # Install Packages
     - name: Add an Apt signing key from google
@@ -29,14 +29,14 @@
       apt: update_cache=yes
 
     - name: install k8s packages
-      apt: name={{ common_support_k8s_packages }} state=present
+      apt: name={{ common_k8s_packages }} state=present
 
     - name: setting up apt hold for k8s packages
       dpkg_selections:
         name: "{{ item }}"
         selection: hold
       with_items:
-        - "{{ common_support_k8s_packages }}"
+        - "{{ common_k8s_packages }}"
 
     - name: Just force systemd to reread configs (2.4 and above)
       systemd:

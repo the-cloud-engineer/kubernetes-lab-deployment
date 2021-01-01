@@ -2,11 +2,12 @@
 - hosts: test
   gather_facts: False
   become: yes
+  vars_files: ../vars/vars.yaml
   tasks:
-    - name: Include vars of stuff.yaml into the 'stuff' variable (2.2).
-      include_vars:
-        file: vars/vars.yaml
-    - name: Ansible array variables example
+    # - name: Include vars of stuff.yaml into the 'stuff' variable (2.2).
+    #   include_vars:
+    #     file: vars/vars.yaml
+    - name: Display host info
       debug: 
         msg: "{{ item }}"
       with_items:

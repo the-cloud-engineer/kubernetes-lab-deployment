@@ -1,0 +1,41 @@
+---
+- hosts: masternode
+  gather_facts: True
+  become: yes
+  vars_files: ../vars/vars.yaml
+  tasks:
+  #configuring masternode
+    - name: copy user creation template to master
+      copy:
+        src: ../files/simple_user.yaml
+        dest: /root/simple_user.yaml
+
+    - name: copy rolbinding template to master
+      copy:
+        src: ../files/create_roll_binding.yaml
+        dest: /root/create_roll_binding.yaml
+
+    - name: creating users
+      shell: kubectl apply -f /root/simple_user.yaml
+      register: user_create
+      
+    - debug: msg="{{ user_create.stdout }}"
+
+    - name: creating roll bindings
+      shell: kubectl apply -f /root/create_roll_binding.yaml
+      register: roll_binding
+      
+    - debug: msg="{{ roll_binding.stdout }}"
+
+    - name: getting token for GUi login - admin-user
+      shell:  kubectl -n kubernetes-dashboard describe secret $(kubectl -n kubernetes-dashboard get secret | grep admin-user | awk '{print $1}') | grep "token:" | awk '{ print $2 }'
+      register: login_token
+
+    - debug: msg="{{ login_token.stdout }}"
+
+    - name: getting connection port
+      shell:  kubectl -n kubernetes-dashboard get service kubernetes-dashboard | grep dashboard | awk '{ print $5 }' | cut -d ":" -f2 | cut -d "/" -f1
+      register: connection_port
+
+    # - debug: msg="use above token after starting kubectl proxy at client machine"
+    - debug: msg="Login URL- https://{{ apiserver_advertise_address }}:{{ connection_port.stdout }}"

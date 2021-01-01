@@ -49,5 +49,5 @@
         msg="the UUIDs of the servers are not unique"
       when: uuid_result.stdout != ""
     
-    - debug: msg="server ubiq UUID validation passed"
+    - debug: msg="server uniq UUID validation passed"
 

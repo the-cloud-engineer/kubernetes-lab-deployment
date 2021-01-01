@@ -1,0 +1,26 @@
+---
+- import_playbook: set-copy-ssh-key.yaml
+
+- import_playbook: check_host_uuids.yaml
+
+- import_playbook: firewall_configuration.yaml
+
+- import_playbook: load_brnetfilter.yaml
+
+- import_playbook: set-hosts-test.yaml
+
+- import_playbook: install-docker-package.yaml
+
+- import_playbook: install-common-k8s_packages.yaml
+
+- import_playbook: configure-master.yaml
+
+- import_playbook: install_cni_calico.yaml
+
+- import_playbook: configure-worker.yaml
+
+- import_playbook: taint_all_nodes.yaml
+
+- import_playbook: install_k8s_dashboard.yaml
+
+- import_playbook: create_dashboard_user.yaml

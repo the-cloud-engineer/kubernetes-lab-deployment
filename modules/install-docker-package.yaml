@@ -45,7 +45,7 @@
         state: directory
         mode: '0755'
 
-    - name: Just force systemd to reread configs (2.4 and above)
+    - name: Just force systemd to reload configs
       systemd:
         daemon_reload: yes
 

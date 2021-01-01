@@ -1,19 +1,19 @@
 [localhost]
 
 [source_image_clone_1]
-#source-colne-1 ansible_host=192.168.56.43
+#source-colne-1 ansible_host=192.168.56.50
 
 [test]
-testnode-1 ansible_host=192.168.56.46
-testnode-2 ansible_host=192.168.56.47
+master-node ansible_host=192.168.56.50
+worker-node-1 ansible_host=192.168.56.44
 
 [masternode]
 #master ansible_host=192.168.56.44
-testnode-1 ansible_host=192.168.56.46
+master-node ansible_host=192.168.56.50
 
 [workernode]
 #worker-0 ansible_host=192.168.56.45
-testnode-2 ansible_host=192.168.56.47
+worker-node-1 ansible_host=192.168.56.44
 
 [vars]
 ansible_ssh_user=ubuntu

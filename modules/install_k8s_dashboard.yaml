@@ -1,0 +1,29 @@
+---
+- hosts: masternode
+  gather_facts: True
+  become: yes
+  vars_files: ../vars/vars.yaml
+  tasks:
+  #configuring masternode
+    - name: Download dashboard manifest 
+      get_url:
+        url: "{{ dashboard_config_url}}"
+        dest: /root/dashboard.yaml
+
+    - name: apply dashboard manifest
+      shell: kubectl apply -f /root/dashboard.yaml
+      register: dashboard_result
+
+    - debug: msg="{{ dashboard_result.stdout }}"
+
+    - name: copy Dashboard enabler script to master
+      copy:
+        src: ../files/dashboard_external_access.sh
+        dest: /root/dashboard_external_access.sh
+        mode: a+x
+
+    - name: Execute dashboard enabler script
+      shell: sh /root/dashboard_external_access.sh
+      register: dashboard_script
+
+    - debug: msg="{{ dashboard_script.stdout }}"

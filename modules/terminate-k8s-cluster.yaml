@@ -5,6 +5,15 @@
   vars_files: ../vars/vars.yaml
   tasks:
   #configuring masternode
-      - name: Initiate kubernetis cluster
+      # - name: Draining cluster
+      #   shell: for i in $(kubectl get nodes | grep -v NAME | awk '{ print $1 }' );do kubectl drain $i --delete-local-data --force --ignore-daemonsets; done
+      #   register: drain_state
+      
+      # - debug: msg="{{ drain_state.stdout }}"
+
+      - name: Resetting cluster
         shell: kubeadm reset
-        register: resetstate
+        register: drain_state
+      
+      - debug: msg="{{ drain_state.stdout }}"
+      

@@ -34,7 +34,17 @@
   vars_files: ../vars/vars.yaml
   tasks:
     - debug: msg="{{ hostvars['DUMMY_HOST_k8s']['c_token'] }}"
-  
+
+    - name: Remove file kubelet conf
+      file:
+        path: /etc/kubernetes/kubelet.conf 
+        state: absent
+
+    - name: Remove file ca crt
+      file:
+        path: /etc/kubernetes/pki/ca.crt 
+        state: absent
+
     - name: initiating worker to join
       shell: "{{ hostvars['DUMMY_HOST_k8s']['c_token'] }}"
       register: joined_cluster
