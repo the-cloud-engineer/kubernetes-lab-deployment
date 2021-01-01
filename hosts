@@ -8,10 +8,12 @@ testnode-1 ansible_host=192.168.56.46
 testnode-2 ansible_host=192.168.56.47
 
 [masternode]
-master ansible_host=192.168.56.44
+#master ansible_host=192.168.56.44
+testnode-1 ansible_host=192.168.56.46
 
 [workernode]
-worker-0 ansible_host=192.168.56.45
+#worker-0 ansible_host=192.168.56.45
+testnode-2 ansible_host=192.168.56.47
 
 [vars]
 ansible_ssh_user=ubuntu

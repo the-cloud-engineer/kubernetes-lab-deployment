@@ -1,0 +1,10 @@
+---
+- hosts: masternode
+  gather_facts: True
+  become: yes
+  vars_files: ../vars/vars.yaml
+  tasks:
+  #configuring masternode
+      - name: Initiate kubernetis cluster
+        shell: kubeadm reset
+        register: resetstate

@@ -1,0 +1,11 @@
+---
+- hosts: masternode
+  gather_facts: True
+  become: yes
+  vars_files: ../vars/vars.yaml
+  tasks:
+    - name: Enabeling master for pod provisioning
+      shell: kubectl get nodes | grep master | awk '{ print $2 }'
+      register: pod_provisioning
+    
+    - debug: msg={{ pod_provisioning.stdout }}

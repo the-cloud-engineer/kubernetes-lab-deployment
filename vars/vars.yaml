@@ -11,17 +11,23 @@ common_support_k8s_packages: [ 'kubelet', 'kubeadm', 'kubectl']
 #docker specific variable
 docker_supporting_packages: [ 'apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common', 'gnupg2', 'gnupg-agent'] 
 #docker_packages: [ 'containerd.io=1.2.13-2', 'docker-ce=5:19.03.11~3-0~ubuntu-{{ ansible_distribution_release }}', 'docker-ce-cli=5:19.03.11~3-0~ubuntu-{{ ansible_distribution_release }}']
-docker_packages: [ 'docker-ce', 'docker-ce-cli', 'containerd.io']
+docker_packages: [ 'containerd.io=1.2.13-2', 'docker-ce=5:19.03.11~3-0~ubuntu-focal', 'docker-ce-cli=5:19.03.11~3-0~ubuntu-focal' ]
 
 #k8s specific variable
 k8s_packages: [ 'curl', 'vim', 'git', 'ufw']
 
-##k8s cluster network information
-network_driver:
-network_cidr:
+##k8s cluster information
+pos_network_driver: wave
+pod_network_cidr: 192.168.2.0/24
+apiserver_advertise_address: 192.168.56.46
+
+#calico cni install information
+calico_config_url: https://docs.projectcalico.org/manifests/calico.yaml
 
 uuid_temp_registory: /tmp/uuid_temp_hosts
 uuid_test_file: /tmp/test_vm_uuids
+
+
 host_info:
   - 192.168.56.46 test-1
   - 192.168.56.47 test-2
