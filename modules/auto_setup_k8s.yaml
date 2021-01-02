@@ -3,11 +3,13 @@
 
 - import_playbook: check_host_uuids.yaml
 
+- import_playbook: configure_hostnames.yaml
+
+- import_playbook: configure_hosts_file.yaml
+
 - import_playbook: firewall_configuration.yaml
 
 - import_playbook: load_brnetfilter.yaml
-
-- import_playbook: set-hosts-test.yaml
 
 - import_playbook: install-docker-package.yaml
 

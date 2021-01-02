@@ -1,53 +1,62 @@
 ---
-##verifying unique UUIDs of the host
-# - hosts: test
-#   gather_facts: False
-#   become: yes
-#   vars_files: ../vars/vars.yaml
-#   tasks:
-
-#     - name: checking uuid
-#       command: 'cat /sys/class/dmi/id/product_uuid '
-#       register: dfboot
-
-#     - name: Get system IP
-#       set_fact:
-#         host_uuid=dfboot.stdout
-
-#     - debug: var=dfboot.stdout
-
 - hosts: localhost
   vars_files: ../vars/vars.yaml
+  gather_facts: False
+  tasks:
+    - name: cleanup temp files {{ uuid_temp_directory }}
+      file:
+        path: "{{ uuid_temp_directory }}"
+        state: absent
+
+- hosts: masternode,workernode
+  gather_facts: False
+  become: yes
+  vars_files: ../vars/vars.yaml
+  tasks:
+    - name: Store uuid into {{ uuid_temp_directory }}
+      fetch:
+        src: /sys/class/dmi/id/product_uuid
+        dest: "{{ uuid_temp_directory }}/product_uuid_{{ inventory_hostname  }}"
+        flat: yes
+        
+- hosts: localhost
+  vars_files: ../vars/vars.yaml
+  gather_facts: False
   tasks:
 
-    - name: remove temp test file {{ uuid_test_file }}
-      file: 
-        path: "{{ uuid_test_file }}"
-        state: absent
+    # - name: remove temp test file {{ uuid_test_file }}
+    #   file: 
+    #     path: "{{ uuid_test_file }}"
+    #     state: absent
 
-    - name: remove temp test file {{ uuid_temp_registory }}
-      file: 
-        path: "{{ uuid_temp_registory }}"
-        state: absent
+    # - name: remove temp test file {{ uuid_temp_registory }}
+    #   file: 
+    #     path: "{{ uuid_temp_registory }}"
+    #     state: absent
 
-    - name: creating  temp hosts registry
-      shell: echo {{ item }} | awk '{ print $1}' >> "{{ uuid_temp_registory }}"
-      with_items:
-        - "{{ host_info }}"
+    # - name: creating  temp hosts registry
+    #   shell: echo {{ item }} | awk '{ print $1}' >> "{{ uuid_temp_registory }}"
+    #   with_items:
+    #     - "{{ host_info }}"
 
-    - name: Generating uuid registory
-      shell: for i in `cat {{ uuid_temp_registory }}`;do ssh {{ vm_user }}@$i "sudo cat  /sys/class/dmi/id/product_uuid" >> {{ uuid_test_file }}; done
+    # - name: Generating uuid registory
+    #   shell: for i in `cat {{ uuid_temp_registory }}`;do ssh {{ vm_user }}@$i "sudo cat  /sys/class/dmi/id/product_uuid" >> {{ uuid_test_file }}; done
 
+    # - debug: msg="ls -d {{ uuid_temp_directory }}/* | while read i;do cat $i; done | sort | uniq -d"
     - name: validate uuids
-      shell: cat "{{ uuid_test_file }}" | sort | uniq -d
+      shell: ls -d {{ uuid_temp_directory }}/* | while read i;do cat $i; done | sort | uniq -d
       register: uuid_result
 
     - debug: var=uuid_result.stdout
   
-    - name: verify of uuid is unique
+    - name: verify of uuid is unique , will be skipped if uniq
       fail:
         msg="the UUIDs of the servers are not unique"
       when: uuid_result.stdout != ""
     
     - debug: msg="server uniq UUID validation passed"
 
+    - name: cleanup temp files {{ uuid_temp_directory }}
+      file:
+        path: "{{ uuid_temp_directory }}"
+        state: absent

@@ -6,27 +6,26 @@ vm_password: passw0rd
 copy_local_key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
 
 #common k8s packages to master and worker
-common_k8s_support_packages: [ 'apt-transport-https', 'curl']
+common_k8s_support_packages: [ 'apt-transport-https']
 common_k8s_packages: [ 'kubelet', 'kubeadm', 'kubectl']
 
 #docker specific variable
-docker_supporting_packages: [ 'apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common', 'gnupg2', 'gnupg-agent'] 
-#docker_packages: [ 'containerd.io=1.2.13-2', 'docker-ce=5:19.03.11~3-0~ubuntu-{{ ansible_distribution_release }}', 'docker-ce-cli=5:19.03.11~3-0~ubuntu-{{ ansible_distribution_release }}']
+docker_supporting_packages: [ 'apt-transport-https', 'ca-certificates', 'software-properties-common', 'gnupg2', 'gnupg-agent'] 
 docker_packages: [ 'containerd.io=1.2.13-2', 'docker-ce=5:19.03.11~3-0~ubuntu-focal', 'docker-ce-cli=5:19.03.11~3-0~ubuntu-focal' ]
 
 ##k8s cluster information
+##pod _network_driver: current options available - calico
 pos_network_driver: calico
 pod_network_cidr: 192.168.2.0/24
-apiserver_advertise_address: 192.168.56.50
+apiserver_advertise_address: 192.168.56.47
 
 #calico cni install information
 calico_config_url: https://docs.projectcalico.org/manifests/calico.yaml
 dashboard_config_url: https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0/aio/deploy/recommended.yaml
 
-uuid_temp_registory: /tmp/uuid_temp_hosts
-uuid_test_file: /tmp/test_vm_uuids
+#local directry used for vms unique uuid validation
+uuid_temp_directory: /tmp/k8s_host_uuids
 
-
-host_info:
-  - 192.168.56.50 master-node
-  - 192.168.56.44 worker-node-1
+# host_info:
+#   - 192.168.56.50 master-node
+#   - 192.168.56.44 worker-node-1

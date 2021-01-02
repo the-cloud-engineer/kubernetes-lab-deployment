@@ -1,0 +1,44 @@
+---
+- hosts: masternode,workernode
+  gather_facts: False
+  become: yes
+  vars_files: ../vars/vars.yaml
+  tasks:
+    # - name: Include vars of stuff.yaml into the 'stuff' variable (2.2).
+    #   include_vars:
+    #     file: vars/vars.yaml
+    # - name: Display host info
+    #   debug: 
+    #     msg: "{{ item }}"
+    #   with_items:
+    #     - "{{ host_info }}"
+
+    # - name: updating hosts file
+    #   shell: echo '{{ item }}' >> /etc/hosts
+    #   with_items:
+    #     - "{{ host_info }}"
+
+    # - name: update /etc/hosts file
+    #   blockinfile:
+    #     dest: /etc/hosts
+    #     content: "{{ lookup('template', '../files/hosts.j2') }}"
+    #     state: present
+    - name: Update /etc/hosts
+      become: true
+      blockinfile:
+          path: /etc/hosts
+          create: yes
+          block: |
+            127.0.0.1 localhost
+
+            # The following lines are desirable for IPv6 capable hosts
+            ::1 ip6-localhost ip6-loopback
+            fe00::0 ip6-localnet
+            ff00::0 ip6-mcastprefix
+            ff02::1 ip6-allnodes
+            ff02::2 ip6-allrouters
+            ff02::3 ip6-allhosts
+
+            {% for item in ansible_play_batch %}
+            {{ hostvars[item].ansible_host }}   {{ item }}    
+            {% endfor %}

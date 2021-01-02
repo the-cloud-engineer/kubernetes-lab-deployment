@@ -1,0 +1,22 @@
+---
+- hosts: masternode,workernode
+  gather_facts: True
+  become: yes
+  vars_files: ../vars/vars.yaml
+  tasks:
+    - name: read hostnames
+      debug: msg="inventory_hostname={{ inventory_hostname }}, hostvars[inventory_hostname]['inventory_hostname']={{ hostvars[inventory_hostname]['inventory_hostname'] }}, ansible_hostname={{ ansible_hostname }}, new_hostname={{ new_hostname }}"
+      when: new_hostname is defined
+    
+    - name: "Update Hostnames"
+      hostname:
+        name: "{{ new_hostname }}"
+    
+    - name: update hostname file 
+      shell: echo "{{ new_hostname }}" > /etc/hostname
+
+    # - name: Unconditionally reboot the machine with all defaults
+    #   reboot:
+    #   reboot_timeout: 600
+    #   test_command: hostname;uptime;date;
+    #   when: 
