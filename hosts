@@ -1,35 +1,19 @@
 [localhost]
 
-[source_image_clone_1]
-#source-colne-1 ansible_host=192.168.56.50
-
-[test]
-#master-node ansible_host=192.168.56.50
-#worker-node-1 ansible_host=192.168.56.44
-
 [masternode]
-master ansible_host=192.168.56.47 new_hostname=master
+master ansible_host=192.168.56.47  new_hostname=master
 
 [workernode]
-worker-1 ansible_host=192.168.56.49  new_hostname=worker-1
-worker-2 ansible_host=192.168.56.48 new_hostname=worker-2
+worker-1 ansible_host=192.168.56.48  new_hostname=worker-test-1
+worker-2 ansible_host=192.168.56.49  new_hostname=worker-test-2
 
-[vars]
-ansible_ssh_user=ubuntu
-ansible_ssh_port=22
-ansible_ssh_pass=passw0rd
-
-[test:vars]
-ansible_ssh_user=ubuntu
-ansible_ssh_port=22
-ansible_ssh_pass=passw0rd
 
 [masternode:vars]
 ansible_ssh_user=ubuntu
 ansible_ssh_port=22
-ansible_ssh_pass=passw0rd
+#ansible_ssh_pass=passw0rd
 
 [workernode:vars]
 ansible_ssh_user=ubuntu
 ansible_ssh_port=22
-ansible_ssh_pass=passw0rd
+#ansible_ssh_pass=passw0rd

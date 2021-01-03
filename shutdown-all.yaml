@@ -1,3 +1,4 @@
+#this script will shutdown all servers in hosts files
 ---
 - hosts: all
   gather_facts: no
@@ -8,7 +9,8 @@
     - name: shutdown
       command: /sbin/shutdown -h now
       become: yes
+      register: shutdown_status
 #      sudo: yes
 
-    - name: wait go down
-      local_action: wait_for host={{ ansible_ssh_host }} port=22 state=stopped
+    - name: Shutdown status
+      debug: msg=shutdown_status.stdout

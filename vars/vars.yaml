@@ -1,35 +1,46 @@
-user_name: 
-  name: ubuntu
+# user_name: 
+#   name: ubuntu
+#username_and_password of the servers
 password: passw0rd
 vm_user: ubuntu
 vm_password: passw0rd
+
+#expression to look for public keys of k8s nodes in default location.
 copy_local_key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
 
-#common k8s packages to master and worker
-common_k8s_support_packages: [ 'apt-transport-https']
-common_k8s_packages: [ 'kubelet', 'kubeadm', 'kubectl']
-
 #docker specific variable
+#supporting software packages for docker
+#kubeadmin supports only untill the docker version tested with current release
+#please go through k8s documentation to identify lastst docker version to be supported by kubeadmin
+#default values for this packages given below
 docker_supporting_packages: [ 'apt-transport-https', 'ca-certificates', 'software-properties-common', 'gnupg2', 'gnupg-agent'] 
 docker_packages: [ 'containerd.io=1.2.13-2', 'docker-ce=5:19.03.11~3-0~ubuntu-focal', 'docker-ce-cli=5:19.03.11~3-0~ubuntu-focal' ]
 
+#common k8s packages to master and worker
+#the installer will use latest k8s packages available to install
+common_k8s_support_packages: [ 'apt-transport-https']
+common_k8s_packages: [ 'kubelet', 'kubeadm', 'kubectl']
+
 ##k8s cluster information
 ##pod _network_driver: current options available - calico
-pos_network_driver: calico
+pos_network_ni_plugin: calico
 pod_network_cidr: 192.168.2.0/24
 apiserver_advertise_address: 192.168.56.47
 
+#pod network plugin information
 #calico cni install information
+#currently the package will use calico as pod network driver and future release of the installer package will have options for other plugins
 calico_config_url: https://docs.projectcalico.org/manifests/calico.yaml
+
+#k8s dashboar url
+#Note the installer will enable GUi access via Nodeport
+#installer displayes k8s URL and token to be used for dashboard login after deployment completed
 dashboard_config_url: https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0/aio/deploy/recommended.yaml
 
-#local directry used for vms unique uuid validation
+#local directlry used by deployment playbook at ansible master
 uuid_temp_directory: /tmp/k8s_host_uuids
 
-#custom config direcory : used during deployment
+#custom config direcory : this directory is created in each node of k8s cluster and used by deployment play during execution time
 custom_config_dir: /root/k8s_config_dir
 
-##net to yes if want master node to run 
-# host_info:
-#   - 192.168.56.50 master-node
-#   - 192.168.56.44 worker-node-1
+
