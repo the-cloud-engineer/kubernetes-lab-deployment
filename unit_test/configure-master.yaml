@@ -41,18 +41,34 @@
   become: yes
   vars_files: ../vars/vars.yaml
   tasks:
-    - name: configure kube config files for access
-      debug: var=ansible_env.HOME
+    # - name: configure kube config files for access
+    #   debug: var=ansible_env.HOME
     
+    # - name: Create a directory if it does not exist
+    #   file:
+    #     path: "/home/{{ vm_user }}/.kube"
+    #     state: directory
+    #     mode: '0755'
+  
+    # - name: copy the admin config file to  home directory {{ ansible_env.HOME }}
+    #   copy:
+    #     src: /etc/kubernetes/admin.conf
+    #     dest: "/home/{{ vm_user }}/.kube/config"
+    #     remote_src: yes
+    #     owner: "{{ vm_user }}"
+
     - name: Create a directory if it does not exist
       file:
-        path: "/home/{{ vm_user }}/.kube"
+        path: "/home/{{ ansible_ssh_user }}/.kube"
         state: directory
         mode: '0755'
-  
-    - name: copy the admin config file to  home directory {{ ansible_env.HOME }}
+        owner: "{{ ansible_ssh_user }}"
+        group: "{{ ansible_ssh_user }}"
+
+    - name: copy the admin config file to  home directory /home/{{ ansible_ssh_user }}/.kube/
       copy:
-        src: /etc/kubernetes/admin.conf
-        dest: "/home/{{ vm_user }}/.kube/config"
+        src: /root/vignesh.txt
+        dest: "/home/{{ ansible_ssh_user }}/.kube/config"
         remote_src: yes
-        owner: "{{ vm_user }}"
+        owner: "{{ ansible_ssh_user }}"
+        group: "{{ ansible_ssh_user }}"

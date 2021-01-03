@@ -1,13 +1,3 @@
-# user_name: 
-#   name: ubuntu
-#username_and_password of the servers
-password: passw0rd
-vm_user: ubuntu
-vm_password: passw0rd
-
-#expression to look for public keys of k8s nodes in default location.
-copy_local_key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
-
 #docker specific variable
 #supporting software packages for docker
 #kubeadmin supports only untill the docker version tested with current release
@@ -25,7 +15,7 @@ common_k8s_packages: [ 'kubelet', 'kubeadm', 'kubectl']
 ##pod _network_driver: current options available - calico
 pos_network_ni_plugin: calico
 pod_network_cidr: 192.168.2.0/24
-apiserver_advertise_address: 192.168.56.47
+apiserver_advertise_address: 192.168.1.7
 
 #pod network plugin information
 #calico cni install information

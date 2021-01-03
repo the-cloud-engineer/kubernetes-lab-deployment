@@ -13,7 +13,7 @@
       # - debug: msg="{{ drain_state.stdout }}"
 
 #this will remove worker from cluster
-    - name: Resetting cluster
+    - name: Resetting worker node
       shell: kubeadm reset --force
       register: drain_state
       

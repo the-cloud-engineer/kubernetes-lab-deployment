@@ -61,7 +61,6 @@
   become: yes
   tasks:
     - include: tasks/custom_configuration.yaml
-    - include: tasks/get_login_information.yaml
 
 - name: fetch login token
   hosts: masternode

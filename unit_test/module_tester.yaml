@@ -4,24 +4,84 @@
   become: yes
   vars_files: ../vars/vars.yaml
   tasks:
-  #configuring masternode
-    - name: Create a systemd directory for dockers
-      file:
-        path: "{{ custom_config_dir }}"
-        state: directory
-        mode: '0755'
+  # #configuring masternode
+  #   - name: Create a systemd directory for dockers
+  #     file:
+  #       path: "{{ custom_config_dir }}"
+  #       state: directory
+  #       mode: '0755'
 
-    # - name: copy user creation template to master
+  #   # - name: copy user creation template to master
+  #   #   copy:
+  #   #     src: ../files/simple_user.yaml
+  #   #     dest: "{{ custom_config_dir }}/simple_user.yaml"
+
+  #   # - name: creating users
+  #   #   shell: touch {{ custom_config_dir }}/test.yaml
+  #   #   register: user_create
+
+  #   - name: Ansible Template Example
+  #     template:
+  #       src: ../files/dashboard_external_access.j2
+  #       dest: "{{ custom_config_dir }}/dashboard_external_access.sh"
+  #       mode: a+x
+
+# - name: Generate an OpenSSH keypair with the default values (4096 bits, rsa)
+#   community.crypto.openssh_keypair:
+#     path: /tmp/id_ssh_rsa
+
+# - name: generate SSH key "{{ssh_key_filename}}"
+#   user:
+#     name: "{{ansible_user}}"
+#     generate_ssh_key: yes
+#     ssh_key_type: rsa
+#     ssh_key_bits: 4096
+#     ssh_key_file: /tmp/rsa
+#     ssh_key_passphrase: "{{ssh_passphrase}}"
+#     force: no
+    
+    # - debug: msg="{{ ansible_user_id }}"
+    #   become: True
+      # become_user: ubuntu
+    
+    # - debug: msg="{{ ansible_ssh_user }}"
+    #   # become: yes
+    #   # become_user: ubuntu
+
+    # - name: configure kube config files for access
+    #   debug: var=ansible_env.HOME
+    #   become: False
+    
+    # - name: finding ansible user
+    #   set_fact:
+    #     user_name_1:  "{{ ansible_user_id }}"
+    #   #become: False
+  
+    # - debug: msg="{{ user_name_1 }}"
+  
+    # - name: Create a directory if it does not exist
+    #   file:
+    #     path: "/home/{{ ansible_ssh_user }}/.kube"
+    #     state: directory
+    #     mode: '0755'
+    #     owner: "{{ ansible_ssh_user }}"
+    #     group: "{{ ansible_ssh_user }}"
+
+    # - name: copy the admin config file to  home directory /home/{{ ansible_ssh_user }}/.kube/
     #   copy:
-    #     src: ../files/simple_user.yaml
-    #     dest: "{{ custom_config_dir }}/simple_user.yaml"
+    #     src: /root/vignesh.txt
+    #     dest: "/home/{{ ansible_ssh_user }}/.kube/config"
+    #     remote_src: yes
+    #     owner: "{{ ansible_ssh_user }}"
+    #     group: "{{ ansible_ssh_user }}"
 
-    # - name: creating users
-    #   shell: touch {{ custom_config_dir }}/test.yaml
-    #   register: user_create
+    # - name: Set authorized key for remote user
+    #   authorized_key:
+    #     user: "{{ ansible_ssh_user }}"
+    #     state: present
+    #     key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
 
-    - name: Ansible Template Example
-      template:
-        src: ../files/dashboard_external_access.j2
-        dest: "{{ custom_config_dir }}/dashboard_external_access.sh"
-        mode: a+x
+    - name: read hostnames
+      debug: msg="inventory_hostname={{ inventory_hostname }}, hostvars[inventory_hostname]['inventory_hostname']={{ hostvars[inventory_hostname]['inventory_hostname'] }}, ansible_hostname={{ ansible_hostname }}, new_hostname={{ new_hostname }}"
+      when: new_hostname is defined
+      tags: debug,never
