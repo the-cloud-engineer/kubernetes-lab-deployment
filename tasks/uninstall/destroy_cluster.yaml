@@ -1,0 +1,8 @@
+---
+- import_playbook: terminate_workers_nodes.yaml
+
+- import_playbook: terminate-k8s-cluster.yaml
+
+- import_playbook: uninstall_packages.yaml
+
+- import_playbook: remove_confg_files.yaml

@@ -1,0 +1,34 @@
+---
+- name: cleanup k8s config files
+  hosts: masternode,workernode
+  gather_facts: False
+  become: yes
+  vars_files: ../../vars/vars.yaml
+  tasks:
+    - name: cleanup kubernetes config files /etc/kubernetes
+      file:
+        path: /etc/kubernetes
+        state: absent
+    
+    - name: cleanup docker under systemd
+      file:
+        path: /etc/systemd/system/docker*
+        state: absent
+
+    - name: cleanup docker config files 
+      file:
+        path: /etc/docker
+        state: absent
+
+    - name: Update /etc/hosts
+      become: true
+      blockinfile:
+          path: /etc/hosts
+          create: yes
+          block: |
+            127.0.0.1 localhost
+
+    - name: remove systemd directory for dockers
+      file:
+        path: "{{ custom_config_dir }}"
+        state: absent

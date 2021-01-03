@@ -1,6 +1,7 @@
 ---
 - name: prepare ansible node for deployment
   hosts: localhost
+  tags: install
   vars_files: vars/vars.yaml
   gather_facts: False
   tasks:
@@ -8,6 +9,7 @@
 
 - name: prepare k8s nodes
   hosts: masternode,workernode
+  tags: install
   vars_files: vars/vars.yaml
   gather_facts: True
   become: yes
@@ -16,6 +18,7 @@
 
 - name: verify if node product UUIDs are uniq
   hosts: localhost
+  tags: install
   vars_files: vars/vars.yaml
   gather_facts: False
   tasks:
@@ -23,6 +26,7 @@
 
 - name: prepare k8s hosts
   hosts: masternode,workernode
+  tags: install
   vars_files: vars/vars.yaml
   gather_facts: True
   become: yes
@@ -32,6 +36,7 @@
 
 - name: configuring masternode k8s services
   hosts: masternode
+  tags: install
   vars_files: vars/vars.yaml
   gather_facts: True
   become: yes
@@ -41,6 +46,7 @@
 
 - name: configuring worker node k8s services
   hosts: workernode
+  tags: install
   vars_files: vars/vars.yaml
   gather_facts: True
   become: yes
@@ -49,6 +55,7 @@
 
 - name: executing k8s node post custom configurations
   hosts: masternode
+  tags: install
   vars_files: vars/vars.yaml
   gather_facts: True
   become: yes
@@ -56,11 +63,15 @@
     - include: tasks/custom_configuration.yaml
     - include: tasks/get_login_information.yaml
 
-- name: executing k8s node post custom configurations
+- name: fetch login token
   hosts: masternode
-  tags: get_token
+  tags: get_token,install
   vars_files: vars/vars.yaml
   gather_facts: True
   become: yes
   tasks:
     - include: tasks/get_login_information.yaml
+
+- name: Destroy cluster
+  tags: never,uninstall_cluster
+  import_playbook: tasks/uninstall/destroy_cluster.yaml
