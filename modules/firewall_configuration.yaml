@@ -12,7 +12,7 @@
     - name: Allow all access to tcp port 80
       ufw:
         rule: allow
-        port: 80
+        port: '80'
         proto: tcp
 
     - name: Allow port kube-apiserver ,etcd 2379-2380
@@ -24,22 +24,23 @@
     - name: Allow kubelet api - 10250
       ufw:
         rule: allow
-        port: 10250
+        port: '10250'
         proto: tcp
 
     - name: Allow kube schedulerlet - 10251
       ufw:
         rule: allow
-        port: 10251
+        port: '10251'
         proto: tcp
 
     - name: Allow kub control manager - 10253
       ufw:
         rule: allow
-        port: 10252
+        port: '10252'
         proto: tcp
 
-- hosts: test
+##worker node specific port configuration
+- hosts: masternode,workernode
   gather_facts: True
   become: yes
   vars_files: ../vars/vars.yaml
@@ -47,7 +48,7 @@
     - name: Allow kubelet api - 10250
       ufw:
         rule: allow
-        port: 10250
+        port: '10250'
         proto: tcp
 
     - name: Nodeport Servicess

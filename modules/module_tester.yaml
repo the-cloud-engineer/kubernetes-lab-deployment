@@ -1,0 +1,27 @@
+---
+- hosts: masternode
+  gather_facts: True
+  become: yes
+  vars_files: ../vars/vars.yaml
+  tasks:
+  #configuring masternode
+    - name: Create a systemd directory for dockers
+      file:
+        path: "{{ custom_config_dir }}"
+        state: directory
+        mode: '0755'
+
+    # - name: copy user creation template to master
+    #   copy:
+    #     src: ../files/simple_user.yaml
+    #     dest: "{{ custom_config_dir }}/simple_user.yaml"
+
+    # - name: creating users
+    #   shell: touch {{ custom_config_dir }}/test.yaml
+    #   register: user_create
+
+    - name: Ansible Template Example
+      template:
+        src: ../files/dashboard_external_access.j2
+        dest: "{{ custom_config_dir }}/dashboard_external_access.sh"
+        mode: a+x

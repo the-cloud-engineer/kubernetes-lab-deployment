@@ -33,7 +33,8 @@
   become: yes
   vars_files: ../vars/vars.yaml
   tasks:
-    - debug: msg="{{ hostvars['DUMMY_HOST_k8s']['c_token'] }}"
+    - name: k8s join token for worker
+      debug: msg="{{ hostvars['DUMMY_HOST_k8s']['c_token'] }}"
 
     - name: Remove file kubelet conf
       file:
@@ -49,4 +50,5 @@
       shell: "{{ hostvars['DUMMY_HOST_k8s']['c_token'] }}"
       register: joined_cluster
     
-    - debug: msg="{{ joined_cluster.stdout }}"
+    - name: worker join status
+      debug: msg="{{ joined_cluster.stdout }}"

@@ -5,29 +5,31 @@
   vars_files: ../vars/vars.yaml
   tasks:
   #configuring masternode
-    - name: Download networking manifest 
+    - name: Download calico plugin networking manifest 
       get_url:
         url: "{{ calico_config_url}}"
-        dest: /root/calico.yaml
+        dest: "{{ custom_config_dir }}/calico.yaml"
 
-    - name: apply calico manifest
-      shell: kubectl apply -f /root/calico.yaml
+    - name: Apply calico manifest
+      shell: kubectl apply -f {{ custom_config_dir }}/calico.yaml
       register: calico_result
 
-    - debug: msg="{{ calico_result.stdout }}"
+    - name: calico installation status
+      debug: msg="{{ calico_result.stdout }}"
 
-    - name: giving a min for master to come up
+    - name: Giving a min for master to come up !!!
       pause:
         minutes: 1
 
 #verify if master node is ready after installing calico
-    - name: get master status
+    - name: Get master status
       shell: kubectl get nodes | grep master | awk '{ print $2 }'
       register: node_status
 
-    - name: checking master status- skipped if master is ready
+    - name: Checking master status- skipped if master is ready
       fail:
         msg="the master nose is not in ready state"
       when: node_status.stdout != "Ready"
 
-    - debug: msg="master node is ready"
+    - name: master node status
+      debug: msg="master node is ready"

@@ -20,3 +20,10 @@
     #   reboot_timeout: 600
     #   test_command: hostname;uptime;date;
     #   when: 
+    
+###creating supporting directory to copy configuration files during deployment
+    - name: Create a systemd directory for dockers
+      file:
+        path: "{{ custom_config_dir }}"
+        state: directory
+        mode: '0755'

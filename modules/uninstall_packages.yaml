@@ -18,7 +18,7 @@
 
  #   - debug: msg={{ remove_k8s_package.stdout }}
 
-    - name: removetall docker packages
+    - name: remove docker packages
       become: yes
       apt: name={{ docker_packages }} state=absent
       register: remove_docker_package
@@ -40,3 +40,7 @@
     - name: Remove dependencies that are no longer required
       apt:
         autoremove: yes
+
+    - name: systemd daemon to reload 
+      systemd:
+        daemon_reload: yes

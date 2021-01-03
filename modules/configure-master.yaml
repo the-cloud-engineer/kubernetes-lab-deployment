@@ -13,10 +13,11 @@
       shell: kubeadm init --pod-network-cidr {{ pod_network_cidr }} --apiserver-advertise-address={{ apiserver_advertise_address }}
       register: initiatestate
       
-    - debug: var=initiatestate.stdout
+    - name: k8s cluster initiation report
+      debug: var=initiatestate.stdout
 
-    - name: configure kube config files for access
-      debug: var=ansible_env.HOME
+    # - name: configure kube config files for access
+    #   debug: var=ansible_env.HOME
 
 ##configuring access files     
     - name: Create a directory if it does not exist

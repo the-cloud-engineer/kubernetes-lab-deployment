@@ -47,14 +47,16 @@
       shell: ls -d {{ uuid_temp_directory }}/* | while read i;do cat $i; done | sort | uniq -d
       register: uuid_result
 
-    - debug: var=uuid_result.stdout
+    - name: list of duplicate UUIDs
+      debug: var=uuid_result.stdout
   
     - name: verify of uuid is unique , will be skipped if uniq
       fail:
         msg="the UUIDs of the servers are not unique"
       when: uuid_result.stdout != ""
     
-    - debug: msg="server uniq UUID validation passed"
+    - name: uuid validation result
+      debug: msg="server uniq UUID validation passed"
 
     - name: cleanup temp files {{ uuid_temp_directory }}
       file:

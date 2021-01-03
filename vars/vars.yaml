@@ -26,6 +26,10 @@ dashboard_config_url: https://raw.githubusercontent.com/kubernetes/dashboard/v2.
 #local directry used for vms unique uuid validation
 uuid_temp_directory: /tmp/k8s_host_uuids
 
+#custom config direcory : used during deployment
+custom_config_dir: /root/k8s_config_dir
+
+##net to yes if want master node to run 
 # host_info:
 #   - 192.168.56.50 master-node
 #   - 192.168.56.44 worker-node-1

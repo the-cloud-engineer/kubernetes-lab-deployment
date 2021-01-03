@@ -1,5 +1,5 @@
 ---
-- hosts: masternode
+- hosts: workernode
   gather_facts: True
   become: yes
   vars_files: ../vars/vars.yaml
@@ -11,12 +11,10 @@
       
       # - debug: msg="{{ drain_state.stdout }}"
 
+#this will remove worker from cluster
     - name: Resetting cluster
       shell: kubeadm reset --force
-      register: rset_state
-      
-    - name: cluster destroy log
-      debug: msg="{{ reset_state.stdout }}"
+      register: drain_state
       
 #remove configuration files
     - name: cleanup cni files 
@@ -31,4 +29,4 @@
     - name: Restart service kublet
       systemd:
         state: restarted
-        name: kubelet      
+        name: kubelet

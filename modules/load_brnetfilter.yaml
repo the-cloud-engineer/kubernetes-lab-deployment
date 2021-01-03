@@ -18,4 +18,5 @@
       shell: lsmod | grep br_net
       register: netfilter_result
 
-    - debug: var=netfilter_result.stdout
+    - name: get currently loaded br netfilter info from kernal
+      debug: var=netfilter_result.stdout

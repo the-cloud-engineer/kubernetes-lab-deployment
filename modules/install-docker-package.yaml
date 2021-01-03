@@ -20,7 +20,8 @@
         url: https://download.docker.com/linux/ubuntu/gpg
         state: present
   
-    - debug: msg={{ ansible_distribution_release }}
+    - name: os distribution release
+      debug: msg={{ ansible_distribution_release }}
     
     - name: Add docker repositories
       apt_repository:

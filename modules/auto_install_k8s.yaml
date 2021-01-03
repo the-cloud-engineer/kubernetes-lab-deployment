@@ -21,8 +21,10 @@
 
 - import_playbook: configure-worker.yaml
 
+- import_playbook: install_k8s_dashboard.yaml
+
 - import_playbook: taint_all_nodes.yaml
 
-- import_playbook: install_k8s_dashboard.yaml
+- import_playbook: configure_node_labels.yaml
 
 - import_playbook: create_dashboard_user.yaml
