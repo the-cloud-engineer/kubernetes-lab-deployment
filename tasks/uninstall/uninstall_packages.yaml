@@ -1,5 +1,5 @@
 ---
-- name: started deleting k8s cluster and uninstall packages
+- name: started uninstall k8s packages
   hosts: masternode,workernode
   gather_facts: False
   become: yes

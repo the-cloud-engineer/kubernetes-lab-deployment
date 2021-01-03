@@ -72,6 +72,6 @@
   tasks:
     - include: tasks/get_login_information.yaml
 
-- name: Destroy cluster
+- name: destroy cluster
   tags: never,uninstall_cluster
   import_playbook: tasks/uninstall/destroy_cluster.yaml
