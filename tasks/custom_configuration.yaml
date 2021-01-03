@@ -1,0 +1,44 @@
+#taint master node policy , usually master node do not schedule podes , enabeling master node to carry podes
+- name: Enabeling master for pod provisioning
+  command: kubectl taint nodes --all node-role.kubernetes.io/master-
+  register: pod_provisioning
+  ignore_errors: yes
+
+- name: capturing current taints
+  shell: kubectl get nodes | grep -v NAME | awk '{ print $1 }' | while read i;do kubectl describe node $i | grep -e Hostname -e Taint; done
+  register: taint_result
+
+- name: cluster taind result
+  debug: msg={{ taint_result.stdout }}
+
+- name: configure worker label for all nodes
+  shell: kubectl get nodes | grep -v NAME | awk '{ print $1 }' | while read i;do kubectl label node $i node-role.kubernetes.io/worker=worker;done
+  register: label_config
+
+- name: result of label configuration
+  debug: msg="{{ label_config.stdout }}"
+
+- name: copy user creation template to master
+  copy:
+    src: ../files/simple_user.yaml
+    dest: "{{ custom_config_dir }}/simple_user.yaml"
+
+- name: copy roll binding template to master
+  copy:
+    src: ../files/create_roll_binding.yaml
+    dest: "{{ custom_config_dir }}/create_roll_binding.yaml"
+
+- name: creating users
+  shell: kubectl apply -f {{ custom_config_dir }}/simple_user.yaml
+  register: user_create
+  
+- name: user creation status
+  debug: msg="{{ user_create.stdout }}"
+
+- name: creating roll bindings
+  shell: kubectl apply -f {{ custom_config_dir }}/create_roll_binding.yaml
+  register: roll_binding
+  
+- name: roll binding status 
+  debug: msg="{{ roll_binding.stdout }}"
+

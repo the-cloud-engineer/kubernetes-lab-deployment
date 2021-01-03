@@ -22,7 +22,7 @@
     #   when: 
     
 ###creating supporting directory to copy configuration files during deployment
-    - name: Create a systemd directory for dockers
+    - name: Create a support directory for deployment
       file:
         path: "{{ custom_config_dir }}"
         state: directory

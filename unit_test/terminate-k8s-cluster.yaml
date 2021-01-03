@@ -13,7 +13,7 @@
 
     - name: Resetting cluster
       shell: kubeadm reset --force
-      register: rset_state
+      register: reset_state
       
     - name: cluster destroy log
       debug: msg="{{ reset_state.stdout }}"

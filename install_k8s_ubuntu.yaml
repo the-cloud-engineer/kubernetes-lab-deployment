@@ -1,0 +1,66 @@
+---
+- name: prepare ansible node for deployment
+  hosts: localhost
+  vars_files: vars/vars.yaml
+  gather_facts: False
+  tasks:
+    - include: tasks/prepare_ansible_master.yaml
+
+- name: prepare k8s nodes
+  hosts: masternode,workernode
+  vars_files: vars/vars.yaml
+  gather_facts: True
+  become: yes
+  tasks:
+    - include: tasks/prepare_nodes.yaml
+
+- name: verify if node product UUIDs are uniq
+  hosts: localhost
+  vars_files: vars/vars.yaml
+  gather_facts: False
+  tasks:
+    - include: tasks/verify_uuid.yaml
+
+- name: prepare k8s hosts
+  hosts: masternode,workernode
+  vars_files: vars/vars.yaml
+  gather_facts: True
+  become: yes
+  tasks:
+    - include: tasks/configure_security.yaml
+    - include: tasks/install_packages.yaml
+
+- name: configuring masternode k8s services
+  hosts: masternode
+  vars_files: vars/vars.yaml
+  gather_facts: True
+  become: yes
+  tasks:
+    - include: tasks/configure_master_node.yaml
+    - include: tasks/configure_cni_calico.yaml
+
+- name: configuring worker node k8s services
+  hosts: workernode
+  vars_files: vars/vars.yaml
+  gather_facts: True
+  become: yes
+  tasks:
+    - include: tasks/configure_worker_node.yaml
+
+- name: executing k8s node post custom configurations
+  hosts: masternode
+  vars_files: vars/vars.yaml
+  gather_facts: True
+  become: yes
+  tasks:
+    - include: tasks/custom_configuration.yaml
+    - include: tasks/get_login_information.yaml
+
+- name: executing k8s node post custom configurations
+  hosts: masternode
+  tags: get_token
+  vars_files: vars/vars.yaml
+  gather_facts: True
+  become: yes
+  tasks:
+    - include: tasks/get_login_information.yaml

@@ -1,0 +1,30 @@
+- name: read hostnames
+  debug: 
+    msg="inventory_hostname={{ inventory_hostname }}, hostvars[inventory_hostname]['inventory_hostname']={{ hostvars[inventory_hostname]['inventory_hostname'] }}, ansible_hostname={{ ansible_hostname }}, new_hostname={{ new_hostname }}"
+  when: new_hostname is defined
+
+- name: "Update Hostnames"
+  hostname:
+    name: "{{ new_hostname }}"
+
+- name: update hostname file 
+  shell: echo "{{ new_hostname }}" > /etc/hostname
+
+- name: Create a systemd directory for dockers
+  file:
+    path: "{{ custom_config_dir }}"
+    state: directory
+    mode: '0755'
+
+- name: Update /etc/hosts
+  become: true
+  blockinfile:
+      path: /etc/hosts
+      create: yes
+      block: |
+        127.0.0.1 localhost
+        
+        {% for item in ansible_play_batch %}
+        {{ hostvars[item].ansible_host }}   {{ item }}    
+        {% endfor %}
+
