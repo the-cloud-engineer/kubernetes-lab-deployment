@@ -49,7 +49,7 @@ The package will take very minimum inputs IPs,hostname and install k8s with pred
   
   Specify the IP of masternode to be used by kubernetes API , this will be more useful if nodes have multipe network interfaces attached and you need to decide which Interface to be exposed for kubernetes APi as per your environmant and firewall settings 
 
-     apiserver_advertise_address : <<master_io_to_be_used_by_k8s_master_node>>
+     apiserver_advertise_address : <<master_ip_to_be_used_by_k8s_master_node>>
 
 **Note:** verify if **pod_network_cidr** valus do not overlap with your existing network. update the CIDR if overlapping
 
@@ -77,7 +77,7 @@ if this ping gets response from all the nodes donfigured in hosts , proceed to I
    
  
  ### Appendix
- if you want to have separate neteork for k8s APIs you can follow below recommended approacn and update variable **apiserver_advertise_address** in vars/vars.yaml file accordingly 
+ if you want to have separate network for k8s APIs, you can follow below recommended approach and update variable **apiserver_advertise_address** in vars/vars.yaml file accordingly 
 
 <img src="images/design-2.JPG" height="300" width="450">  
 
