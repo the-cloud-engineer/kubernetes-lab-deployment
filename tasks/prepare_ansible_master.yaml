@@ -1,0 +1,11 @@
+---
+#run in localhost
+- name: cleanup temp files {{ uuid_temp_directory }}
+  file:
+    path: "{{ uuid_temp_directory }}"
+    state: absent
+
+- name: creating local temp supporting directory
+  file:
+    path: "{{ uuid_temp_directory }}"
+    state: directory

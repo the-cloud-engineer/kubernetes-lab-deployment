@@ -1,0 +1,58 @@
+- name: Allow all access to tcp port 80
+  ufw:
+    rule: allow
+    port: '80'
+    proto: tcp
+
+- name: Allow port kube-apiserver ,etcd 2379-2380
+  ufw:
+    rule: allow
+    port: 2379:2380
+    proto: tcp
+
+- name: Allow kubelet api - 10250
+  ufw:
+    rule: allow
+    port: '10250'
+    proto: tcp
+
+- name: Allow kube schedulerlet - 10251
+  ufw:
+    rule: allow
+    port: '10251'
+    proto: tcp
+
+- name: Allow kub control manager - 10253
+  ufw:
+    rule: allow
+    port: '10252'
+    proto: tcp
+
+- name: Allow kubelet api - 10250
+  ufw:
+    rule: allow
+    port: '10250'
+    proto: tcp
+
+- name: Nodeport Servicess
+  ufw:
+    rule: allow
+    port: 30000:32767
+    proto: tcp
+
+- name: Copy k8s conf - bridge-nf loader
+  copy:
+    src: ../files/k8s.conf
+    dest: /etc/sysctl.d/k8s.conf
+
+- name: Load br_netfilter
+  modprobe:
+    name: br_netfilter
+    state: present
+
+- name: validate uuids
+  shell: lsmod | grep br_net
+  register: netfilter_result
+
+- name: get currently loaded br netfilter info from kernal
+  debug: var=netfilter_result.stdout

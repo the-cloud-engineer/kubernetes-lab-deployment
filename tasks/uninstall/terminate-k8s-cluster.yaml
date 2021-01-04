@@ -1,0 +1,35 @@
+---
+- name: deleting k8s control plane
+  hosts: masternode
+  gather_facts: False
+  become: yes
+  vars_files: ../../vars/vars.yaml
+  tasks:
+  #configuring masternode
+      # - name: Draining cluster
+      #   shell: for i in $(kubectl get nodes | grep -v NAME | awk '{ print $1 }' );do kubectl drain $i --delete-local-data --force --ignore-daemonsets; done
+      #   register: drain_state
+      
+      # - debug: msg="{{ drain_state.stdout }}"
+
+    - name: Resetting cluster
+      shell: kubeadm reset --force
+      register: reset_state
+      
+    - name: cluster destroy log
+      debug: msg="{{ reset_state.stdout }}"
+      
+#remove configuration files
+    - name: cleanup cni files 
+      file:
+        path: /var/lib/cni/
+        state: absent
+
+    - name: systemd daemon to reload 
+      systemd:
+        daemon_reload: yes
+
+    - name: Restart service kublet
+      systemd:
+        state: restarted
+        name: kubelet      

@@ -1,0 +1,74 @@
+---
+- hosts: masternode
+  gather_facts: True
+  become: yes
+  vars_files: ../vars/vars.yaml
+  tasks:
+  #configuring masternode
+
+    - name: configuration
+      debug: msg="kubeadm init --pod-network-cidr {{ pod_network_cidr }} --apiserver-advertise-address={{ apiserver_advertise_address }}"
+
+    - name: Initiate kubernetis cluster
+      shell: kubeadm init --pod-network-cidr {{ pod_network_cidr }} --apiserver-advertise-address={{ apiserver_advertise_address }}
+      register: initiatestate
+      
+    - name: k8s cluster initiation report
+      debug: var=initiatestate.stdout
+
+    # - name: configure kube config files for access
+    #   debug: var=ansible_env.HOME
+
+##configuring access files     
+    - name: Create a directory if it does not exist
+      file:
+        path: "{{ ansible_env.HOME }}/.kube"
+        state: directory
+        mode: '0755'
+
+    - name: copy the admin config file to  home directory {{ ansible_env.HOME }}
+      copy:
+        src: /etc/kubernetes/admin.conf
+        dest: "{{ ansible_env.HOME }}/.kube/config"
+        remote_src: yes
+        owner: "{{ ansible_user_id }}"
+ 
+    - debug: msg="{{ ansible_user_id }}"
+      become: False
+
+- hosts: masternode
+  gather_facts: True
+  become: yes
+  vars_files: ../vars/vars.yaml
+  tasks:
+    # - name: configure kube config files for access
+    #   debug: var=ansible_env.HOME
+    
+    # - name: Create a directory if it does not exist
+    #   file:
+    #     path: "/home/{{ vm_user }}/.kube"
+    #     state: directory
+    #     mode: '0755'
+  
+    # - name: copy the admin config file to  home directory {{ ansible_env.HOME }}
+    #   copy:
+    #     src: /etc/kubernetes/admin.conf
+    #     dest: "/home/{{ vm_user }}/.kube/config"
+    #     remote_src: yes
+    #     owner: "{{ vm_user }}"
+
+    - name: Create a directory if it does not exist
+      file:
+        path: "/home/{{ ansible_ssh_user }}/.kube"
+        state: directory
+        mode: '0755'
+        owner: "{{ ansible_ssh_user }}"
+        group: "{{ ansible_ssh_user }}"
+
+    - name: copy the admin config file to  home directory /home/{{ ansible_ssh_user }}/.kube/
+      copy:
+        src: /root/vignesh.txt
+        dest: "/home/{{ ansible_ssh_user }}/.kube/config"
+        remote_src: yes
+        owner: "{{ ansible_ssh_user }}"
+        group: "{{ ansible_ssh_user }}"

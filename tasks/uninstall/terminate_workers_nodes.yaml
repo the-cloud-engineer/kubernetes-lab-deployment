@@ -1,0 +1,33 @@
+---
+- name: deleting worker nodes
+  hosts: workernode
+  gather_facts: False
+  become: yes
+  vars_files: ../../vars/vars.yaml
+  tasks:
+  #configuring masternode
+      # - name: Draining cluster
+      #   shell: for i in $(kubectl get nodes | grep -v NAME | awk '{ print $1 }' );do kubectl drain $i --delete-local-data --force --ignore-daemonsets; done
+      #   register: drain_state
+      
+      # - debug: msg="{{ drain_state.stdout }}"
+
+#this will remove worker from cluster
+    - name: Resetting worker node
+      shell: kubeadm reset --force
+      register: drain_state
+      
+#remove configuration files
+    - name: cleanup cni files 
+      file:
+        path: /var/lib/cni/
+        state: absent
+
+    - name: systemd daemon to reload 
+      systemd:
+        daemon_reload: yes
+
+    - name: Restart service kublet
+      systemd:
+        state: restarted
+        name: kubelet

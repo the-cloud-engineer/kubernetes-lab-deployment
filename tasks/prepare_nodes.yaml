@@ -1,0 +1,41 @@
+- name: Set authorized key for remote user
+  authorized_key:
+    user: "{{ ansible_ssh_user }}"
+    state: present
+    key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
+
+- name: Store uuid into {{ uuid_temp_directory }}
+  fetch:
+    src: /sys/class/dmi/id/product_uuid
+    dest: "{{ uuid_temp_directory }}/product_uuid_{{ inventory_hostname  }}"
+    flat: yes
+
+- name: read hostnames
+  debug: msg="inventory_hostname={{ inventory_hostname }}, hostvars[inventory_hostname]['inventory_hostname']={{ hostvars[inventory_hostname]['inventory_hostname'] }}, ansible_hostname={{ ansible_hostname }}, new_hostname={{ new_hostname }}"
+  when: new_hostname is defined
+
+- name: "Update Hostnames"
+  hostname:
+    name: "{{ new_hostname }}"
+
+- name: update hostname file 
+  shell: echo "{{ new_hostname }}" > /etc/hostname
+
+###creating supporting directory to copy configuration files during deployment
+- name: Create a support directory for deployment
+  file:
+    path: "{{ custom_config_dir }}"
+    state: directory
+    mode: '0755'
+
+- name: Update /etc/hosts
+  become: true
+  blockinfile:
+      path: /etc/hosts
+      create: yes
+      block: |
+        127.0.0.1 localhost
+        
+        {% for item in ansible_play_batch %}
+        {{ hostvars[item].ansible_host }}   {{ item }}    
+        {% endfor %}

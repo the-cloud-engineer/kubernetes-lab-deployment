@@ -1,7 +1,0 @@
----
-- name: pinger
-  hosts: master
-  
-- include: deploy_kubernetes.yml
-  when: ansible_distribution == "Ubuntu"
-  tags: k8s

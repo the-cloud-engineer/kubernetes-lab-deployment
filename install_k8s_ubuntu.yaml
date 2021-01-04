@@ -1,0 +1,76 @@
+---
+- name: prepare ansible node for deployment
+  hosts: localhost
+  tags: install
+  vars_files: vars/vars.yaml
+  gather_facts: False
+  tasks:
+    - include: tasks/prepare_ansible_master.yaml
+
+- name: prepare k8s nodes
+  hosts: masternode,workernode
+  tags: install
+  vars_files: vars/vars.yaml
+  gather_facts: True
+  become: yes
+  tasks:
+    - include: tasks/prepare_nodes.yaml
+
+- name: verify if node product UUIDs are uniq
+  hosts: localhost
+  tags: install
+  vars_files: vars/vars.yaml
+  gather_facts: False
+  tasks:
+    - include: tasks/verify_uuid.yaml
+
+- name: prepare k8s hosts
+  hosts: masternode,workernode
+  tags: install
+  vars_files: vars/vars.yaml
+  gather_facts: True
+  become: yes
+  tasks:
+    - include: tasks/configure_security.yaml
+    - include: tasks/install_packages.yaml
+
+- name: configuring masternode k8s services
+  hosts: masternode
+  tags: install
+  vars_files: vars/vars.yaml
+  gather_facts: True
+  become: yes
+  tasks:
+    - include: tasks/configure_master_node.yaml
+    - include: tasks/configure_cni_calico.yaml
+
+- name: configuring worker node k8s services
+  hosts: workernode
+  tags: install
+  vars_files: vars/vars.yaml
+  gather_facts: True
+  become: yes
+  tasks:
+    - include: tasks/configure_worker_node.yaml
+
+- name: executing k8s node post custom configurations
+  hosts: masternode
+  tags: install
+  vars_files: vars/vars.yaml
+  gather_facts: True
+  become: yes
+  tasks:
+    - include: tasks/custom_configuration.yaml
+
+- name: fetch login token
+  hosts: masternode
+  tags: get_token,install
+  vars_files: vars/vars.yaml
+  gather_facts: True
+  become: yes
+  tasks:
+    - include: tasks/get_login_information.yaml
+
+- name: destroy cluster
+  tags: never,uninstall_cluster
+  import_playbook: tasks/uninstall/destroy_cluster.yaml

@@ -1,0 +1,63 @@
+---
+- hosts: masternode,workernode
+  gather_facts: True
+  become: yes
+  vars_files: ../vars/vars.yaml
+  tasks:
+    - name: Update apt
+      apt: update_cache=yes
+
+    - name: Install common supporting packages
+      apt: name={{ docker_supporting_packages }} state=latest
+
+    - name: Add docker GPG key file
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        keyring: /etc/apt/trusted.gpg.d/docker.gpg
+
+    - name: Add docker keyring
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+  
+    - name: os distribution release
+      debug: msg={{ ansible_distribution_release }}
+    
+    - name: Add docker repositories
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
+        state: present
+
+    - name: Update apt
+      apt: update_cache=yes
+
+    - name: Install docker packages
+      become: yes
+      apt: name={{ docker_packages }} state=present
+
+    - name: Copy k8s conf - daemon json file
+      copy:
+        src: ../files/daemon.json
+        dest: /etc/docker/daemon.json
+
+    - name: Create a systemd directory for dockers
+      file:
+        path: /etc/systemd/system/docker.service.d
+        state: directory
+        mode: '0755'
+
+    - name: Just force systemd to reload configs
+      systemd:
+        daemon_reload: yes
+
+    - name: Restart service docker
+      systemd:
+        state: restarted
+        daemon_reload: yes
+        name: docker
+  
+    - name: Enabeling docker docker
+      systemd:
+        enabled: yes
+        name: docker
+

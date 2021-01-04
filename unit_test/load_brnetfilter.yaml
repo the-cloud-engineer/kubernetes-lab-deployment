@@ -1,5 +1,5 @@
 ---
-- hosts: test
+- hosts: masternode,workernode
   gather_facts: False
   become: yes
   vars_files: ../vars/vars.yaml
@@ -14,4 +14,9 @@
         name: br_netfilter
         state: present
 
-      
+    - name: validate uuids
+      shell: lsmod | grep br_net
+      register: netfilter_result
+
+    - name: get currently loaded br netfilter info from kernal
+      debug: var=netfilter_result.stdout

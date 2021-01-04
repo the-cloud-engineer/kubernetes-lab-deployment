@@ -1,0 +1,58 @@
+---
+- hosts: masternode,workernode
+  gather_facts: True
+  become: yes
+  vars_files: ../vars/vars.yaml
+  tasks:
+    # - name: Allow k8s api port 6443
+    #   community.general.ufw:
+    #     rule: allow
+    #     port: '80'
+    #     proto: tcp
+    - name: Allow all access to tcp port 80
+      ufw:
+        rule: allow
+        port: '80'
+        proto: tcp
+
+    - name: Allow port kube-apiserver ,etcd 2379-2380
+      ufw:
+        rule: allow
+        port: 2379:2380
+        proto: tcp
+
+    - name: Allow kubelet api - 10250
+      ufw:
+        rule: allow
+        port: '10250'
+        proto: tcp
+
+    - name: Allow kube schedulerlet - 10251
+      ufw:
+        rule: allow
+        port: '10251'
+        proto: tcp
+
+    - name: Allow kub control manager - 10253
+      ufw:
+        rule: allow
+        port: '10252'
+        proto: tcp
+
+##worker node specific port configuration
+- hosts: masternode,workernode
+  gather_facts: True
+  become: yes
+  vars_files: ../vars/vars.yaml
+  tasks:
+    - name: Allow kubelet api - 10250
+      ufw:
+        rule: allow
+        port: '10250'
+        proto: tcp
+
+    - name: Nodeport Servicess
+      ufw:
+        rule: allow
+        port: 30000:32767
+        proto: tcp

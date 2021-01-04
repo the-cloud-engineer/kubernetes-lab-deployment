@@ -1,0 +1,46 @@
+---
+- hosts: masternode,workernode
+  gather_facts: True
+  become: yes
+  vars_files: ../vars/vars.yaml
+  tasks:
+
+    - name: setting up apt hold for k8s packages
+      dpkg_selections:
+        name: "{{ item }}"
+        selection: purge
+      with_items:
+        - "{{ common_k8s_packages }}"
+
+    - name: remove k8s packages
+      apt: name={{ common_k8s_packages }} state=absent
+      register: remove_k8s_package
+
+ #   - debug: msg={{ remove_k8s_package.stdout }}
+
+    - name: remove docker packages
+      become: yes
+      apt: name={{ docker_packages }} state=absent
+      register: remove_docker_package
+
+#    - debug: msg={{ remove_docker_package.stdout }}
+
+    - name: remove common supporting packages
+      apt: name={{ docker_supporting_packages }} state=absent
+      register: remove_docker_support_package      
+
+#    - debug: msg={{ remove_docker_support_package.stdout }}
+
+    - name: remove support k8s packages
+      apt: name={{ common_k8s_support_packages }} state=absent
+      register: remove_k8s_package
+
+#    - debug: msg={{ remove_k8s_package.stdout }}
+
+    - name: Remove dependencies that are no longer required
+      apt:
+        autoremove: yes
+
+    - name: systemd daemon to reload 
+      systemd:
+        daemon_reload: yes

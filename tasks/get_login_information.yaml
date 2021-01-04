@@ -1,0 +1,13 @@
+- name: getting token for GUi login - admin-user
+  shell:  kubectl -n kubernetes-dashboard describe secret $(kubectl -n kubernetes-dashboard get secret | grep admin-user | awk '{print $1}') | grep "token:" | awk '{ print $2 }'
+  register: login_token
+
+- name: getting connection port
+  shell:  kubectl -n kubernetes-dashboard get service kubernetes-dashboard | grep dashboard | awk '{ print $5 }' | cut -d ":" -f2 | cut -d "/" -f1
+  register: connection_port
+
+- name: use below token and url to login to dashboard
+  debug: msg="{{ login_token.stdout }}"
+
+- name: use below URL to access kubernetes dashboard
+  debug: msg="Login URL- https://{{ apiserver_advertise_address }}:{{ connection_port.stdout }}"

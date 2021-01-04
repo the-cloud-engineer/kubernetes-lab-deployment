@@ -1,0 +1,17 @@
+---
+- hosts: masternode
+  gather_facts: True
+  become: yes
+  vars_files: ../vars/vars.yaml
+  tasks:
+    - name: Enabeling master for pod provisioning
+      command: kubectl taint nodes --all node-role.kubernetes.io/master-
+      register: pod_provisioning
+      ignore_errors: yes
+
+    - name: capturing current taints
+      shell: kubectl get nodes | grep -v NAME | awk '{ print $1 }' | while read i;do kubectl describe node $i | grep -e Hostname -e Taint; done
+      register: taint_result
+
+    - name: cluster taind result
+      debug: msg={{ taint_result.stdout }}

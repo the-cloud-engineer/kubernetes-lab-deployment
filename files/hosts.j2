@@ -1,0 +1,3 @@
+{% for host in groups['masternode'] %}
+   {{ hostvars[host]['ansible_facts']}}
+{% endfor %}

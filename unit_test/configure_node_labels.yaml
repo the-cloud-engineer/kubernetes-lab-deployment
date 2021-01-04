@@ -1,0 +1,15 @@
+---
+- hosts: masternode
+  gather_facts: False
+  become: yes
+#  vars_files: ../vars/vars.yaml
+  tasks:
+  #configuring worker labels for all node
+
+    - name: configure worker label for all nodes
+      shell: kubectl get nodes | grep -v NAME | awk '{ print $1 }' | while read i;do kubectl label node $i node-role.kubernetes.io/worker=worker;done
+      register: label_config
+    
+    - name: result of label configuration
+      debug: msg="{{ label_config.stdout }}"
+

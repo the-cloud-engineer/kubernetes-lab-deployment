@@ -1,0 +1,6 @@
+#/bin/bash
+
+working_dir={{ custom_config_dir }}
+kubectl -n kubernetes-dashboard get service  kubernetes-dashboard -o yaml > $working_dir/dashboard-service.yaml
+sed -i "s/type: ClusterIP/type: NodePort/g" $working_dir/dashboard-service.yaml
+kubectl -n kubernetes-dashboard apply -f $working_dir/dashboard-service.yaml

@@ -1,0 +1,87 @@
+
+#Initiating k8s cluster
+- name: configuration
+  debug: msg="kubeadm init --pod-network-cidr {{ pod_network_cidr }} --apiserver-advertise-address={{ apiserver_advertise_address }}"
+
+- name: Initiate kubernetis cluster
+  shell: kubeadm init --pod-network-cidr {{ pod_network_cidr }} --apiserver-advertise-address={{ apiserver_advertise_address }}
+  register: initiatestate
+  
+- name: k8s cluster initiation report
+  debug: var=initiatestate.stdout
+
+##configuring access files  
+##configuring root user   
+- name: Create a directory if it does not exist
+  file:
+    path: "{{ ansible_env.HOME }}/.kube"
+    state: directory
+    mode: '0755'
+
+- name: copy the admin config file to  home directory {{ ansible_env.HOME }}
+  copy:
+    src: /etc/kubernetes/admin.conf
+    dest: "{{ ansible_env.HOME }}/.kube/config"
+    remote_src: yes
+    owner: "{{ ansible_user_id }}"
+
+- debug: msg="{{ ansible_user_id }}"
+  become: False
+
+- name: configure kube config files for access
+  debug: var=ansible_env.HOME
+
+###configure for  ansible user 
+- name: Create a directory if it does not exist
+  file:
+    path: "/home/{{ ansible_ssh_user }}/.kube"
+    state: directory
+    mode: '0755'
+    owner: "{{ ansible_ssh_user }}"
+    group: "{{ ansible_ssh_user }}"
+
+- name: copy the admin config file to  home directory /home/{{ ansible_ssh_user }}/.kube/
+  copy:
+    src: /root/vignesh.txt
+    dest: "/home/{{ ansible_ssh_user }}/.kube/config"
+    remote_src: yes
+    owner: "{{ ansible_ssh_user }}"
+    group: "{{ ansible_ssh_user }}"
+
+##preparing join command for worker
+- name: Obtaining join command
+  shell: join_cmd=$(kubeadm token create --print-join-command);echo "$join_cmd";
+  register: cluster_token
+- debug: var=cluster_token.stdout
+
+- name: Register dummy host with variable
+  add_host:
+    name: "DUMMY_HOST_k8s"
+    c_token: "{{ cluster_token.stdout }}"
+
+#####install kubernetes kubernetes dashboard
+
+- name: Download dashboard manifest 
+  get_url:
+    url: "{{ dashboard_config_url}}"
+    dest: "{{ custom_config_dir }}/dashboard.yaml"
+
+- name: apply dashboard manifest
+  shell: kubectl apply -f {{ custom_config_dir }}/dashboard.yaml
+  register: dashboard_result
+
+- name: dashboard installation status
+  debug: msg="{{ dashboard_result.stdout }}"
+
+- name: Ansible Template Example
+  template:
+    src: ../files/dashboard_external_access.j2
+    dest: "{{ custom_config_dir }}/dashboard_external_access.sh"
+    mode: a+x
+
+- name: Execute dashboard enabler script
+  shell: sh {{ custom_config_dir }}/dashboard_external_access.sh
+  register: dashboard_script
+
+- name: dashboard enabler status
+  debug: msg="{{ dashboard_script.stdout }}"
