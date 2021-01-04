@@ -15,8 +15,8 @@ The package will take very minimum inputs IPs,hostname and install k8s with pred
 #### 2.1. Mandatory inputs
 2.1.1.  Fill in the ansible inventory "hosts" file in the package appropriately
   
-**NOTE** You can comment "**ansible_ssh_pass**"  if you have done ssh key exchanges already  
-**NOTE** The name you provide for "**new_hostname**" will be hostname of the nodes. In case of DNS provison hostnames , you can provide received hostname here so it remain same after deployment
+**NOTE** You can comment **ansible_ssh_pass**  if you have done ssh key exchanges already  
+**NOTE** The name you provide for **new_hostname** will be hostname of the nodes. In case of DNS provison hostnames , you can provide received hostname here so it remain same after deployment
 
       ##Inventory file guide
       [masternode]
@@ -45,7 +45,7 @@ The package will take very minimum inputs IPs,hostname and install k8s with pred
 
      apiserver_advertise_address : <<master_io_to_be_used_by_k8s_master_node>>
 
-**Note:** verify if pod_network_cidr valus do not overlap with your existing network. update the CIDR if overlapping
+**Note:** verify if **pod_network_cidr** valus do not overlap with your existing network. update the CIDR if overlapping
 
 ####   2.2 Optional Inputs:
 
