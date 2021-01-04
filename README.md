@@ -1,6 +1,12 @@
 # kubernetes-lab-deployment v1.0
 The kubernetes-lab-deployment project will setup ubuntu based kubernetes environment with 1 master and N worker nodes based on Ubuntu operating system
 
+
+### Recomended basic design
+This design is recommended for basic users and first timers to get started with k8s clusters.For multinetwork design , refer to Appendix section.  
+
+<img src="images/design-1.JPG" height="300" width="450">  
+
 ### 1. Prerequisites:
 1. Servers with OS installed , IPs assigned:
    - yes , only this is enough , the package start from very basic configuration like  key exchange with ansible master, setting hostname,hosts file update, etc..
@@ -69,4 +75,8 @@ if this ping gets response from all the nodes donfigured in hosts , proceed to I
    
 ` ansible-playbook install_k8s_ubuntu.yaml -i hosts --tags=uninstall_cluster`
    
-   
+ 
+ ### Appendix
+ if you want to have separate neteork for k8s APIs you can follow below recommended approacn and update variable **apiserver_advertise_address** in vars/vars.yaml file accordingly 
+
+<img src="images/design-2.JPG" height="300" width="450">  
