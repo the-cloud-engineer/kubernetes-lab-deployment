@@ -80,3 +80,4 @@ if this ping gets response from all the nodes donfigured in hosts , proceed to I
  if you want to have separate neteork for k8s APIs you can follow below recommended approacn and update variable **apiserver_advertise_address** in vars/vars.yaml file accordingly 
 
 <img src="images/design-2.JPG" height="300" width="450">  
+
